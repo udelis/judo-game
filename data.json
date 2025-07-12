@@ -1,0 +1,38 @@
+{
+  "players": {
+    "532928": {
+      "name": "Рад",
+      "score": 11,
+      "achievements": {
+        "world": 0,
+        "olympic": 0,
+        "ukraine": 1
+      },
+      "lastAttack": "2025-07-09",
+      "role": "Тренер",
+      "lastRoleAction": "2025-07-12"
+    },
+    "6349380298": {
+      "name": "Родіон",
+      "score": 1,
+      "achievements": {
+        "world": 0,
+        "olympic": 0,
+        "ukraine": 0
+      },
+      "lastAttack": "2025-07-09",
+      "role": "Президент ФДУ",
+      "lastRoleAction": "2025-07-09"
+    }
+  },
+  "lastRoleDistribution": "2025-07-12",
+  "logs": [
+    {
+      "time": "09.07.2025, 03:14:37",
+      "attacker": "Родіон",
+      "target": "Everybodydancenow",
+      "score": 1,
+      "result": "Юко"
+    }
+  ]
+}
