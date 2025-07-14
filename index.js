@@ -241,6 +241,20 @@ bot.hears(/^\/help(@\w+)?$/, (ctx) => {
 🥋 Звання: КМС / МС / МСМК
 🏆 Досягнення: Іппон в середу, суботу, неділю`);
 });
+bot.telegram.setMyCommands([
+  { command: 'join', description: 'Приєднатись до гри' },
+  { command: 'attack', description: 'Атакувати іншого (reply)' },
+  { command: 'log', description: 'Останні атаки' },
+  { command: 'profile', description: 'Твій профіль' },
+  { command: 'leaderboard', description: 'Топ гравців' },
+  { command: 'roles', description: 'Засідання ФДУ (раз на добу)' },
+  { command: 'help', description: 'Список команд' },
+  { command: 'president', description: 'Команда ролі: президент' },
+  { command: 'trainer', description: 'Команда ролі: тренер' },
+  { command: 'medic', description: 'Команда ролі: медсестра' },
+  { command: 'laptiev', description: 'Команда ролі: лаптєв' },
+  { command: 'judge', description: 'Команда ролі: суддя' }
+]);
 
 bot.launch();
 console.log('Бот запущено');
