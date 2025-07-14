@@ -2,6 +2,20 @@ const { Telegraf } = require('telegraf');
 const fs = require('fs');
 require('dotenv').config();
 const bot = new Telegraf(process.env.BOT_TOKEN);
+bot.telegram.setMyCommands([
+  { command: 'join', description: 'приєднатись до гри' },
+  { command: 'attack', description: 'атакувати іншого (reply)' },
+  { command: 'log', description: 'останні атаки' },
+  { command: 'profile', description: 'твій профіль' },
+  { command: 'leaderboard', description: 'топ гравців' },
+  { command: 'roles', description: 'засідання ФДУ (раз на добу)' },
+  { command: 'help', description: 'допомога' },
+  { command: 'president', description: 'роль: президент' },
+  { command: 'trainer', description: 'роль: тренер' },
+  { command: 'medic', description: 'роль: медсестра' },
+  { command: 'laptiev', description: 'роль: лаптєв' },
+  { command: 'judge', description: 'роль: суддя' }
+]);
 
 const DATA_FILE = 'data.json';
 
@@ -54,7 +68,7 @@ function getTitle(score) {
     return null;
 }
 
-bot.command('join', (ctx) => {
+bot.hears(/^\/join(@\w+)?$/, (ctx) => {
     const chatId = ctx.chat.id;
     const userId = ctx.from.id;
     const chatData = getChatData(chatId);
@@ -75,7 +89,7 @@ bot.command('join', (ctx) => {
     }
 });
 
-bot.command('attack', (ctx) => {
+bot.hears(/^\/attack(@\w+)?$/, (ctx) => {
     const chatId = ctx.chat.id;
     const chatData = getChatData(chatId);
     const attacker = ctx.from;
@@ -90,8 +104,8 @@ bot.command('attack', (ctx) => {
     const today = getToday();
     if (attackerData.lastAttack === today) return ctx.reply('Ти вже атакував сьогодні!');
 
-    const score = [0,1,5,10][Math.floor(Math.random()*4)];
-    const resultText = results[score][Math.floor(Math.random()*results[score].length)];
+    const score = [0, 1, 5, 10][Math.floor(Math.random() * 4)];
+    const resultText = results[score][Math.floor(Math.random() * results[score].length)];
 
     attackerData.score += score;
     attackerData.lastAttack = today;
@@ -114,7 +128,7 @@ bot.command('attack', (ctx) => {
 +${score} балів. Загальний рахунок: ${attackerData.score}`);
 });
 
-bot.command('profile', (ctx) => {
+bot.hears(/^\/profile(@\w+)?$/, (ctx) => {
     const chatData = getChatData(ctx.chat.id);
     const player = chatData.players[ctx.from.id];
     if (!player) return ctx.reply('Ти ще не в грі. Напиши /join');
@@ -130,22 +144,20 @@ ${player.title ? `🥋 Звання: ${player.title}\n` : ''}${player.role ? `�
 - Олімпійський чемпіон: ${a.olympic}`);
 });
 
-bot.command('leaderboard', (ctx) => {
+bot.hears(/^\/leaderboard(@\w+)?$/, (ctx) => {
     const chatData = getChatData(ctx.chat.id);
     const sorted = Object.entries(chatData.players).sort(([, a], [, b]) => b.score - a.score).slice(0, 5);
 
     if (!sorted.length) return ctx.reply('Поки немає гравців.');
 
-    let msg = `🏆 Топ гравців:
-
-`;
+    let msg = `🏆 Топ гравців:\n\n`;
     sorted.forEach(([id, p], i) => {
         msg += `${i + 1}. ${p.name} — ${p.score} балів\n`;
     });
     ctx.reply(msg);
 });
 
-bot.command('roles', (ctx) => {
+bot.hears(/^\/roles(@\w+)?$/, (ctx) => {
     const chatData = getChatData(ctx.chat.id);
     const today = getToday();
 
@@ -174,7 +186,7 @@ bot.command('roles', (ctx) => {
 });
 
 function createRoleCommand(command, requiredRole, emojiReply) {
-    bot.command(command, (ctx) => {
+    bot.hears(new RegExp(`^/${command}(@\\w+)?$`), (ctx) => {
         const chatData = getChatData(ctx.chat.id);
         const player = chatData.players[ctx.from.id];
         const reply = ctx.message.reply_to_message;
@@ -198,7 +210,7 @@ createRoleCommand('medic', 'Медсестра', '👩‍⚕️💉🩼');
 createRoleCommand('laptiev', 'Лаптєв', '📸');
 createRoleCommand('judge', 'Суддя', '💻🏆🙋‍♂️');
 
-bot.command('log', (ctx) => {
+bot.hears(/^\/log(@\w+)?$/, (ctx) => {
     const chatData = getChatData(ctx.chat.id);
     if (!chatData.logs.length) return ctx.reply('Ще не було жодної атаки.');
 
@@ -208,7 +220,7 @@ bot.command('log', (ctx) => {
     ctx.reply(messages.join('\n\n'));
 });
 
-bot.command('help', (ctx) => {
+bot.hears(/^\/help(@\w+)?$/, (ctx) => {
     ctx.reply(`🎮 Команди гри:
 
 /join — приєднатись до гри
